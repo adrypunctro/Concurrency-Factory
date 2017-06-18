@@ -6,8 +6,6 @@
 package concurencyfactory;
 
 import UserInterfaces.GameInterface;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
@@ -30,12 +28,13 @@ public class Game
     private final Queue<Protester> protestersQueue = new ConcurrentLinkedQueue<>();
     private final AtomicInteger protestersCount = new AtomicInteger(0);
     private int ministryMaxBudget       = 5;
-    private int protestsLimit           = 2;
+    private int protesterLimit          = 2;
     private int spawnProtesterInterval  = 2000;
     private int intvalUEFunding         = 6000;
     private int minTimeProtesting       = 1000;
     private int maxTimeProtesting       = 5000;
-    private int threftInterval          = 1000;
+    private int minTheftInterval        = 1000;
+    private int maxTheftInterval        = 2000;
     
     private final Lock protesterLock;
     private final Condition protesterCond;
@@ -88,14 +87,14 @@ public class Game
      * @return the protestsLimit
      */
     public int getProtestsLimit() {
-        return protestsLimit;
+        return protesterLimit;
     }
 
     /**
      * @param protestsLimit the protestsLimit to set
      */
-    public void setProtestsLimit(int protestsLimit) {
-        this.protestsLimit = protestsLimit;
+    public void setProtesterLimit(int protestsLimit) {
+        this.protesterLimit = protestsLimit;
     }
     
     /**
@@ -142,7 +141,7 @@ public class Game
     
     public void start()
     {
-        ui.showGameSettings(ministries.size(), ministryMaxBudget, protestsLimit, spawnProtesterInterval, intvalUEFunding);
+        ui.showGameSettings(ministries.size(), ministryMaxBudget, protesterLimit, spawnProtesterInterval, intvalUEFunding);
         
         // European Union Funding ----------------------------------------------
         Thread ueThread = new Thread(){
@@ -177,7 +176,7 @@ public class Game
                             public void run(){
                                 Ministry ministry = ministries.get(protester.getMinistryId());
                                 ministry.incProtesting();
-                                ui.protesting(protester.getId());
+                                //ui.protesting(protester.getId()); //Are rost daca tot avem ui.newProtester?
                                 protester.protest();
                                 boolean withMoney = false;
                                 if (ministry.getBudget() > 0) {
@@ -187,7 +186,7 @@ public class Game
                                 }
                                 ministry.decProtesting();
                                 protestersCount.decrementAndGet();
-                                ui.protesterLeave(protester.getId(), withMoney);
+                                ui.protesterLeave(protester.getId(), ministry.getId(), withMoney);
                             }
                         }.start();
                     }
@@ -203,7 +202,12 @@ public class Game
             public void run() {
                 while(true)
                 {
-                    try {Thread.sleep(getThreftInterval());} catch (InterruptedException ex) {}
+                    Random rn = new Random();
+                    int minTime = getMinTheftInterval();
+                    int maxTime = getMaxTimeProtesting();
+                    int theftTimer = minTime + rn.nextInt(maxTime - minTime);
+                    
+                    try {Thread.sleep(theftTimer);} catch (InterruptedException ex) {}
                     
                     for(Ministry ministry : ministries.values())
                     {
@@ -255,7 +259,7 @@ public class Game
 
     private void checkProtester()
     {
-        if (protestersCount.get() >= protestsLimit)
+        if (protestersCount.get() >= protesterLimit)
         {
             new Thread(){
                 @Override
@@ -284,7 +288,7 @@ public class Game
     {
         protesterLock.lock();
         try {
-            ui.policeLeave();
+            ui.policeLeft();
             protesterCond.signalAll();
         }
         finally { protesterLock.unlock(); }
@@ -305,17 +309,31 @@ public class Game
     }
 
     /**
-     * @return the threftInterval
+     * @return the minTheftInterval
      */
-    public int getThreftInterval() {
-        return threftInterval;
+    public int getMinTheftInterval() {
+        return minTheftInterval;
     }
 
     /**
-     * @param threftInterval the threftInterval to set
+     * @param threftInterval the minTheftInterval to set
      */
-    public void setThreftInterval(int threftInterval) {
-        this.threftInterval = threftInterval;
+    public void setMinTheftInterval(int theftInterval) {
+        this.minTheftInterval = theftInterval;
+    }
+    
+    /**
+     * @return the maxTheftInterval
+     */
+    public int getMaxTheftInterval() {
+        return maxTheftInterval;
+    }
+
+    /**
+     * @param threftInterval the maxTheftInterval to set
+     */
+    public void setMaxTheftInterval(int theftInterval) {
+        this.maxTheftInterval = theftInterval;
     }
     
 }

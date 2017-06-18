@@ -40,7 +40,7 @@ public class GameConsole
     public void newProtester(int protesterID, int ministryID) {
         MinistryObj obj = ministries.get(ministryID);
         if (obj != null) {
-            VA_DEBUG.INFO("New protest ["+protesterID+"] at "+obj.name, true);
+            VA_DEBUG.INFO("(/) New protester ["+protesterID+"] at "+obj.name, true);
         }
         else {
             VA_DEBUG.ERROR("ERR ministery ["+ministryID+"] not found.", true);
@@ -54,7 +54,7 @@ public class GameConsole
     }
 
     @Override
-    public void protesterLeave(int protesterID, boolean withMoney) {
+    public void protesterLeave(int protesterID, int ministryID, boolean withMoney) {
         VA_DEBUG.INFO("Protester ["+protesterID+"] left "+(withMoney?"$$$":"no money"), true);
     }
 
@@ -65,7 +65,7 @@ public class GameConsole
 
     @Override
     public void ministryDonate(int ministryID, int amount) {
-        VA_DEBUG.SUCCESS("Minister of ["+ministryID+"] donate "+amount+".", true);
+        VA_DEBUG.SUCCESS("Minister of ["+ministryID+"] donated "+amount+".", true);
     }
 
     @Override
@@ -74,13 +74,13 @@ public class GameConsole
     }
 
     @Override
-    public void policeLeave() {
-        VA_DEBUG.WARNING("--== Police leaved ==--", true);
+    public void policeLeft() {
+        VA_DEBUG.WARNING("--== Police left ==--", true);
     }
 
     @Override
     public void protesting(int protesterID) {
-        VA_DEBUG.INFO("Protester ["+protesterID+"] protesting...", true);
+        VA_DEBUG.INFO("Protester ["+protesterID+"] is protesting...", true);
     }
     
     

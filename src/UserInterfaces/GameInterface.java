@@ -15,11 +15,11 @@ public interface GameInterface
     public void newProtester(int protesterID, int ministryID);
     public void protesting(int protesterID);
     public void ueFundingMinistry(int ministryID, int amount);
-    public void protesterLeave(int protesterID, boolean withMoney);
+    public void protesterLeave(int protesterID, int ministryID, boolean withMoney);
     public void ministryTheft(int ministryID, int amount);
     public void ministryDonate(int ministryID, int amount);
     public void policeArived();
-    public void policeLeave();
+    public void policeLeft();
 
     public void showGameSettings(int ministriesSize, int ministryMaxBudget, int protestsLimit, int intvalProtest, int intvalUEFunding);   
 }

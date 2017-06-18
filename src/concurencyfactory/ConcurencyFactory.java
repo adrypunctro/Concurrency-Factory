@@ -7,6 +7,7 @@ package concurencyfactory;
 
 import UserInterfaces.GameInterface;
 import UserInterfaces.GameConsole;
+import UserInterfaces.GameGUI;
 
 /**
  *
@@ -19,26 +20,34 @@ public class ConcurencyFactory
      */
     public static void main(String[] args)
     {
-        GameInterface ui = new GameConsole();
-        Game game = new Game(ui);
+        //GameInterface ui = new GameConsole();
+        //Game game = new Game(ui);
+        
+        GameGUI gui = new GameGUI();
+        Game game = new Game(gui);
         
         game.setMinistries(new String[]{
             "Ministry of Agriculture",
             "Ministry of the Environment",
             "Ministry of Justice",
             "Ministry of Education",
-            "Ministry of Health"
+            "Ministry of Health",
+            "Ministry of Economy",
+            "Ministry of Transport",
+            "Ministry of Youth"
         });
-        game.setThreftInterval(4000);
-        game.setIntvalUEFunding(10000);
-        game.setMinistryMaxBudget(5);
         
-        game.setProtestsLimit(5);
-        game.setIntvalSpawnProtester(2000);
+        game.setMinTheftInterval(4000);
+        game.setMaxTheftInterval(8000);
+        game.setIntvalUEFunding(8000);
+        game.setMinistryMaxBudget(6);
+        
+        game.setProtesterLimit(15);
+        game.setIntvalSpawnProtester(700);
         game.setMinTimeProtesting(8000);
-        game.setMaxTimeProtesting(10000);
-
+        game.setMaxTimeProtesting(12000);
         
+        gui.setVisible(true);
         game.start();
     }
     
